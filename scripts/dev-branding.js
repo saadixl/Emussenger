@@ -38,6 +38,7 @@ set('CFBundleName', NAME);
 set('CFBundleDisplayName', NAME);
 set('CFBundleIdentifier', 'dev.emussenger.app.dev');
 set('NSMicrophoneUsageDescription', 'Emussenger uses the microphone so the other person can hear you in Messenger calls.');
+set('NSCameraUsageDescription', 'Emussenger uses the camera so the other person can see you in Messenger video calls.');
 
 if (fs.existsSync(icon)) {
   fs.copyFileSync(icon, path.join(appDir, 'Contents', 'Resources', 'electron.icns'));

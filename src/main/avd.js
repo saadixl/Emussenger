@@ -29,7 +29,9 @@ const CONFIG = {
   'hw.gpu.mode': 'auto',
   'hw.audioInput': 'yes',
   'hw.audioOutput': 'yes',
-  'hw.camera.front': 'none',
+  // The Mac's built-in camera, for video calls. It only turns on while an
+  // Android app (Messenger) is actually using it.
+  'hw.camera.front': 'webcam0',
   'hw.camera.back': 'none',
   'hw.sdCard': 'no',
   'hw.accelerometer': 'no',

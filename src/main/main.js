@@ -189,7 +189,7 @@ function showAndroidScreen(extra = {}) {
 // user ever lands on Android's home screen, bring Messenger straight back.
 async function enterMessenger() {
   clearInterval(installPoll);
-  requestMicrophone();
+  requestCallPermissions();
   await emulator.allowAnyOrientation().catch(() => {});
   await emulator.launchMessenger().catch(() => {});
   showAndroidScreen();
@@ -201,11 +201,14 @@ async function enterMessenger() {
 }
 
 // The emulator runs as Emussenger's child, so macOS checks Emussenger's
-// microphone permission when Android records (Messenger calls). Ask once,
-// up front, rather than mid-call.
-function requestMicrophone() {
-  if (systemPreferences.getMediaAccessStatus('microphone') !== 'not-determined') return;
-  systemPreferences.askForMediaAccess('microphone').catch(() => {});
+// microphone and camera permissions when Android uses them (Messenger
+// calls). Ask once, up front, rather than mid-call.
+async function requestCallPermissions() {
+  for (const media of ['microphone', 'camera']) {
+    if (systemPreferences.getMediaAccessStatus(media) === 'not-determined') {
+      await systemPreferences.askForMediaAccess(media).catch(() => {});
+    }
+  }
 }
 
 function showInstallScreen(error) {

@@ -52,7 +52,8 @@
       "artifactName": "${productName}-${version}-${arch}.${ext}",
       "hardenedRuntime": false,
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Emussenger uses the microphone so the other person can hear you in Messenger calls."
+        "NSMicrophoneUsageDescription": "Emussenger uses the microphone so the other person can hear you in Messenger calls.",
+        "NSCameraUsageDescription": "Emussenger uses the camera so the other person can see you in Messenger video calls."
       }
     }
   }

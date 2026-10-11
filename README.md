@@ -119,7 +119,8 @@ macOS notifications with a Dock badge. Quit with ⌘Q.
 - Meta may flag or checkpoint logins from an emulator. Use at your own risk.
 - Notification mirroring and Intel Macs haven't been fully tested yet.
 - Resizing the window briefly blanks the screen while Android re-lays out.
-- Messenger calls depend on the emulator's audio and have no camera passthrough yet.
+- Calls use your Mac's microphone and built-in camera. Only one camera is available, so
+  switching cameras in a video call doesn't work.
 
 ## Development
 
@@ -155,5 +156,4 @@ npm run icons # re-render build/icon.svg to icon.png and icon.icns
 ## What's next?
 The first version allows you to chat naturally. But there are some improvements I want to do.
 - The app uses whopping 5GB memory. Need to optimize that. (If I would supply the APK from a 3rd party website and use a lighter Android image or some other container, it could be lighter. But that would be a huge security risk.)
-- The audio call works but mic doesn't work. You can just listen.
 - Haven't tried the video call yet.
