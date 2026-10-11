@@ -104,7 +104,7 @@ async function startStream() {
     send('video:session', size);
   });
   session.on('packet', (p) => send('video:packet', p));
-  session.on('clipboard', (text) => clipboard.writeText(text));
+  session.on('clipboard', (text) => Promise.resolve(clipboard.writeText(text)).catch(() => {}));
   session.on('closed', () => {
     if (stream !== session) return;
     stream = null;
@@ -281,7 +281,12 @@ async function setup() {
   }
 }
 
-const paste = () => stream?.setClipboard(clipboard.readText(), true);
+// clipboard.readText() returns a Promise in recent Electron versions; awaiting
+// also works where it's still synchronous.
+async function paste() {
+  const text = await clipboard.readText();
+  if (text) stream?.setClipboard(text, true);
+}
 const openMessenger = () => emulator.launchMessenger().catch(() => {});
 
 // Text that the default Android key map can type goes through key events;
