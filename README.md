@@ -126,3 +126,10 @@ npm run icons # re-render build/icon.svg to icon.png and icon.icns
 - The Android emulator and system images are downloaded directly from Google by each user, under
   Google's Android SDK license terms, which the user accepts in the app. Emussenger does not
   redistribute them.
+
+
+## What's next?
+The first version allows you to chat naturally. But there are some improvements I want to do.
+- The app uses whopping 5GB memory. There is a full fledged Android running. You literally need to login using your google account and install facebook from the playstore. What if you didn't have to do that? What if the first screen was the Facebook Android App running on a super lean Android or something much lighter?
+-  The audio call works but mic doesn't work. You can just listen.
+-  Haven't tried the video call yet.
