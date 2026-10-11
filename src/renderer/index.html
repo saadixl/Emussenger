@@ -50,29 +50,6 @@
       <p class="muted" id="boot-hint"></p>
     </section>
 
-    <section class="panel" data-screen="install-messenger">
-      <h1>Add Messenger</h1>
-      <p class="lede">
-        Drop the Messenger app file here. You can download it from a trusted site such as
-        APKMirror. Look for “Messenger” by Meta Platforms, Inc.
-      </p>
-      <div class="dropzone" id="dropzone">
-        <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
-        <span>Drop a <strong id="install-exts"></strong> file here</span>
-        <button class="primary" id="btn-choose">Choose file…</button>
-      </div>
-      <p class="error" id="install-error" hidden></p>
-      <p class="muted">
-        Have a Google account? <a href="#" id="link-playstore">Install from Google Play instead</a>.
-      </p>
-    </section>
-
-    <section class="panel" data-screen="installing-messenger">
-      <div class="spinner"></div>
-      <h1>Installing Messenger</h1>
-      <p class="muted">This takes a few seconds.</p>
-    </section>
-
     <section class="panel" data-screen="error">
       <h1>Something went wrong</h1>
       <p id="error-message"></p>
@@ -90,7 +67,6 @@
           <strong>Install Messenger from Google Play</strong>
           <span>Sign in and install Messenger. Emussenger switches to it automatically once it's installed.</span>
         </div>
-        <button id="btn-cancel-playstore">Use a file instead</button>
       </div>
       <div class="connecting" id="connecting">
         <div class="spinner"></div>

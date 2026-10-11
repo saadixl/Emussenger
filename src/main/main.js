@@ -1,5 +1,5 @@
 const path = require('path');
-const { app, BrowserWindow, ipcMain, clipboard, dialog, systemPreferences, shell: macShell } = require('electron');
+const { app, BrowserWindow, ipcMain, clipboard, systemPreferences, shell: macShell } = require('electron');
 const paths = require('./paths');
 const state = require('./state');
 const sdk = require('./sdk');
@@ -10,7 +10,6 @@ const { buildMenu } = require('./menu');
 const { createComposer } = require('./composer');
 
 const TOOLBAR_HEIGHT = 38;
-const PACKAGE_EXTENSIONS = ['apk', 'apkm', 'xapk', 'apks'];
 
 let win = null;
 let stream = null;
@@ -211,40 +210,8 @@ async function requestCallPermissions() {
   }
 }
 
-function showInstallScreen(error) {
-  showAndroid = false;
-  stopStream();
-  clearInterval(installPoll);
-  setScreen('install-messenger', { error, extensions: PACKAGE_EXTENSIONS });
-}
-
-async function installFromFile(file) {
-  if (!androidReady || running) return;
-  const ext = path.extname(file).slice(1).toLowerCase();
-  if (!PACKAGE_EXTENSIONS.includes(ext)) {
-    showInstallScreen(`"${path.basename(file)}" isn't an Android app. Use a .apk, .apkm, .xapk or .apks file.`);
-    return;
-  }
-  setScreen('installing-messenger');
-  try {
-    await emulator.installPackageFile(file, paths.downloads);
-    await enterMessenger();
-  } catch (err) {
-    const reason = err.message.match(/INSTALL_[A-Z_]+/)?.[0];
-    showInstallScreen(reason ? `Android couldn't install this file (${reason}).` : err.message);
-  }
-}
-
-async function chooseFile() {
-  const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-    title: 'Choose the Messenger app file',
-    properties: ['openFile'],
-    filters: [{ name: 'Android app', extensions: PACKAGE_EXTENSIONS }],
-  });
-  if (!canceled && filePaths[0]) await installFromFile(filePaths[0]);
-}
-
-// Fallback: install from Google Play, which needs a Google account.
+// Messenger isn't installed: open its Google Play page and switch to it once
+// the user has signed in and installed it.
 async function installFromPlayStore() {
   await emulator.openPlayStore().catch(() => {});
   showAndroidScreen({ playStore: true });
@@ -299,7 +266,7 @@ async function setup() {
     await fitDisplayToWindow();
 
     if (await emulator.isMessengerInstalled()) await enterMessenger();
-    else showInstallScreen();
+    else await installFromPlayStore();
   } catch (err) {
     console.error(err);
     setScreen('error', { message: err.message });
@@ -348,11 +315,6 @@ function registerIpc() {
   ipcMain.on('app:retry', () => run());
   ipcMain.on('app:accept-license', () => licenseWaiter?.());
   ipcMain.on('app:open-logs', () => macShell.openPath(paths.logs));
-
-  ipcMain.on('messenger:install-file', (_e, file) => installFromFile(file));
-  ipcMain.on('messenger:choose-file', () => chooseFile());
-  ipcMain.on('messenger:play-store', () => installFromPlayStore());
-  ipcMain.on('messenger:cancel-play-store', () => showInstallScreen());
 
   ipcMain.on('input:touch', (_e, { action, x, y }) => {
     stream?.touch(action, x, y, videoSize.width, videoSize.height);

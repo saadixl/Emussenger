@@ -60,12 +60,8 @@ xattr -dr com.apple.quarantine /Applications/Emussenger.app
 
 1. Open Emussenger. On first launch it asks you to accept Google's Android SDK license, then
    downloads Android from Google. This happens once and resumes if interrupted.
-2. When Android is ready you'll see **Add Messenger**. Drop the Messenger app file onto the
-   window, or click **Choose file…**. Accepted formats: `.apk`, `.apkm`, `.xapk`, `.apks`.
-   - Download it from a trusted source such as APKMirror, and make sure the developer is
-     **Meta Platforms, Inc.**
-   - Prefer Google Play? Click **Install from Google Play instead** and sign in with a Google
-     account.
+2. When Android is ready, Google Play opens on Messenger's page. Sign in with a Google account
+   and install Messenger. Emussenger switches to it automatically once it's installed.
 3. Log in to Messenger. Done.
 
 Closing the window keeps Messenger running in the background, so new messages still arrive as

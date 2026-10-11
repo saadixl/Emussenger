@@ -214,48 +214,8 @@ async function systemBarInsets() {
   };
 }
 
-const ABIS = ['armeabi', 'armeabi_v7a', 'arm64_v8a', 'x86', 'x86_64', 'mips', 'mips64'];
-const DEVICE_ABI = process.arch === 'arm64' ? 'arm64_v8a' : 'x86_64';
-
-function apksIn(dir) {
-  return fs.readdirSync(dir, { recursive: true })
-    .filter((f) => f.toLowerCase().endsWith('.apk'))
-    .map((f) => path.join(dir, f))
-    // Skip native-code splits built for other CPU types.
-    .filter((f) => {
-      const abi = path.basename(f).match(/config\.([\w]+)\.apk$/i)?.[1]?.toLowerCase();
-      return !abi || !ABIS.includes(abi) || abi === DEVICE_ABI;
-    });
-}
-
-// Installs a user-supplied Messenger package: a plain .apk or a split bundle
-// (.apkm / .xapk / .apks, which are zips of APKs). -g grants runtime
-// permissions so notifications work without Android permission prompts.
-async function installPackageFile(file, tmpDir) {
-  const opts = { timeout: 5 * 60 * 1000 };
-  if (file.toLowerCase().endsWith('.apk')) {
-    await adb(['-s', SERIAL, 'install', '-r', '-g', file], opts);
-  } else {
-    const dir = path.join(tmpDir, `bundle-${Date.now()}`);
-    fs.mkdirSync(dir, { recursive: true });
-    try {
-      await new Promise((resolve, reject) =>
-        execFile('/usr/bin/ditto', ['-x', '-k', file, dir], (err) =>
-          err ? reject(new Error("This file couldn't be opened. Use a .apk, .apkm, .xapk or .apks file.")) : resolve()));
-      const apks = apksIn(dir);
-      if (!apks.length) throw new Error('No Android app was found inside this file.');
-      await adb(['-s', SERIAL, 'install-multiple', '-r', '-g', ...apks], opts);
-    } finally {
-      fs.rmSync(dir, { recursive: true, force: true });
-    }
-  }
-  if (!(await isMessengerInstalled())) {
-    throw new Error("That file installed, but it isn't Messenger. Please choose the Messenger app.");
-  }
-}
-
 module.exports = {
   SERIAL, MESSENGER, events, adb, shell, start, stop,
   isMessengerInstalled, launchMessenger, openPlayStore,
-  isHomeScreen, systemBarInsets, installPackageFile, setDisplaySize, allowAnyOrientation, disableUnneededApps, dumpUi,
+  isHomeScreen, systemBarInsets, setDisplaySize, allowAnyOrientation, disableUnneededApps, dumpUi,
 };

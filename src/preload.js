@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer, webUtils } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
 const on = (channel) => (fn) => ipcRenderer.on(channel, (_e, payload) => fn(payload));
 
@@ -12,12 +12,6 @@ contextBridge.exposeInMainWorld('emussenger', {
   onProgress: on('app:progress'),
   onVideoSession: on('video:session'),
   onVideoPacket: on('video:packet'),
-
-  // Messenger install: a dropped File, the file picker, or Google Play.
-  installFile: (file) => ipcRenderer.send('messenger:install-file', webUtils.getPathForFile(file)),
-  chooseFile: () => ipcRenderer.send('messenger:choose-file'),
-  installFromPlayStore: () => ipcRenderer.send('messenger:play-store'),
-  cancelPlayStore: () => ipcRenderer.send('messenger:cancel-play-store'),
 
   touch: (action, x, y) => ipcRenderer.send('input:touch', { action, x, y }),
   scroll: (x, y, h, v) => ipcRenderer.send('input:scroll', { x, y, h, v }),

@@ -23,10 +23,6 @@
       $('boot-hint').textContent = data.firstBoot
         ? 'The first start takes a minute or two.'
         : 'This takes a few seconds.';
-    } else if (name === 'install-messenger') {
-      $('install-exts').textContent = data.extensions.map((e) => `.${e}`).join(' / ');
-      $('install-error').hidden = !data.error;
-      $('install-error').textContent = data.error ?? '';
     } else if (name === 'error') {
       $('error-message').textContent = data.message;
     } else if (name === 'running') {
@@ -51,33 +47,13 @@
   api.onVideoSession(() => window.video.reset());
   api.onVideoPacket((p) => window.video.handlePacket(p));
 
-  // Dropping a file anywhere in the window installs it while the
-  // "Add Messenger" screen is up; otherwise drops are ignored (Electron would
-  // navigate to the file).
-  const dropzone = $('dropzone');
-  window.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzone.classList.toggle('over', screen === 'install-messenger');
-  });
-  window.addEventListener('dragleave', (e) => {
-    if (!e.relatedTarget) dropzone.classList.remove('over');
-  });
-  window.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropzone.classList.remove('over');
-    const file = e.dataTransfer.files[0];
-    if (file && screen === 'install-messenger') api.installFile(file);
-  });
+  // Ignore dropped files; Electron would otherwise navigate to them.
+  window.addEventListener('dragover', (e) => e.preventDefault());
+  window.addEventListener('drop', (e) => e.preventDefault());
 
   $('btn-accept').addEventListener('click', () => api.acceptLicense());
   $('btn-retry').addEventListener('click', () => api.retry());
   $('btn-logs').addEventListener('click', () => api.openLogs());
-  $('btn-choose').addEventListener('click', () => api.chooseFile());
-  $('link-playstore').addEventListener('click', (e) => {
-    e.preventDefault();
-    api.installFromPlayStore();
-  });
-  $('btn-cancel-playstore').addEventListener('click', () => api.cancelPlayStore());
   $('btn-back').addEventListener('click', () => api.back());
 
   api.ready();

@@ -148,22 +148,3 @@ button.primary {
 .banner[hidden] { display: none; }
 .banner span { display: block; color: var(--muted); font-size: 12px; }
 
-.dropzone {
-  width: min(460px, 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 28px;
-  margin-top: 8px;
-  border: 2px dashed var(--border);
-  border-radius: 14px;
-  color: var(--muted);
-  transition: border-color .15s, background .15s;
-}
-.dropzone.over { border-color: var(--accent); background: rgba(24, 119, 242, .1); }
-.dropzone svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.error { color: #ff6b6b; }
-.error[hidden] { display: none; }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
