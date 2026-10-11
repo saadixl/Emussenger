@@ -134,14 +134,12 @@ function stopStream() {
   s?.stop();
 }
 
-// Android pixels per window point. Android runs at 160 dpi (1 px per dp), so
-// one window point is one Android dp and Messenger is sized like a desktop
-// app. Rendering 1 px per point (not Retina's 2) keeps graphics memory low
-// at the cost of slightly softer text.
-const PX_PER_POINT = 1;
-// Caps the render size to limit graphics memory and encoder load on big
-// windows; beyond this Android gets fewer dp and content simply scales up.
-const MAX_PIXELS = 1920 * 1200;
+// Android pixels per window point. Android runs at 240 dpi (1.5 px per dp),
+// so one window point is one Android dp: Messenger looks like a desktop app.
+const PX_PER_POINT = 1.5;
+// Caps the stream so the in-guest H.264 encoder stays fast on big windows;
+// beyond this Android gets fewer dp and content simply scales up.
+const MAX_PIXELS = 2560 * 1600;
 const MIN_SIDE = 480;
 let fitting = null;
 

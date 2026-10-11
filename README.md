@@ -78,9 +78,8 @@ macOS notifications with a Dock badge. Quit with ⌘Q.
   shown as macOS notifications, with an unread count on the Dock icon.
 - **Background:** with the window closed, the stream stops but Android keeps running. ⌘Q shuts
   Android down.
-- **Memory:** Android always cold-boots (about half a minute) instead of restoring a snapshot,
-  which would load all of its RAM up front, and it renders one pixel per window point (capped
-  at 1920×1200) rather than at full Retina resolution.
+- **Memory:** Android always cold-boots (about 10 seconds) instead of restoring a snapshot,
+  which would load all of its RAM up front.
 
 ## Privacy and security
 

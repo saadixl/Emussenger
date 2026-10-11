@@ -85,9 +85,8 @@ async function start() {
   // Let apps fill the display whatever its shape, instead of rotating or
   // letterboxing portrait-only screens when the window is wide.
   await shell('wm set-ignore-orientation-request true').catch(() => {});
-  // 160 dpi: 1 dp = 1 px, so Android renders one pixel per window point.
-  // (Earlier versions used 240 dpi; set it explicitly so they're reset.)
-  await shell('wm density 160').catch(() => {});
+  // The real screen size follows the window, at 240 dpi so 1 dp = 1.5 px.
+  await shell('wm density 240').catch(() => {});
   // Never show an on-screen keyboard: all typing comes from the Mac keyboard.
   await shell('settings put secure show_ime_with_hard_keyboard 0').catch(() => {});
 }
