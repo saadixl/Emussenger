@@ -130,6 +130,6 @@ npm run icons # re-render build/icon.svg to icon.png and icon.icns
 
 ## What's next?
 The first version allows you to chat naturally. But there are some improvements I want to do.
-- The app uses whopping 5GB memory. There is a full fledged Android running. You literally need to login using your google account and install facebook from the playstore. What if you didn't have to do that? What if the first screen was the Facebook Android App running on a super lean Android or something much lighter?
--  The audio call works but mic doesn't work. You can just listen.
--  Haven't tried the video call yet.
+- The app uses whopping 5GB memory. Need to optimize that. (If I would supply the APK from a 3rd party website and use a lighter Android image or some other container, it could be lighter. But that would be a huge security risk.)
+- The audio call works but mic doesn't work. You can just listen.
+- Haven't tried the video call yet.
