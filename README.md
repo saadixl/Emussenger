@@ -116,11 +116,15 @@ macOS notifications with a Dock badge. Quit with ⌘Q.
 
 ## Known limitations
 
-- Meta may flag or checkpoint logins from an emulator. Use at your own risk.
+- **Your own video is sideways in video calls.** The emulator's camera driver reports a
+  phone-style camera, so Messenger rotates the Mac camera's picture a quarter turn. Voice and
+  incoming video work normally.
+- **Only one camera.** Switching cameras in a video call doesn't work.
+- **Meta may flag or checkpoint logins from an emulator.** Use at your own risk.
+- **Memory:** Emussenger uses about 2.5–3.5 GB of RAM while running, most of it for Android.
+- **Not notarized by Apple yet**, so macOS asks you to confirm the first launch (see Download).
 - Notification mirroring and Intel Macs haven't been fully tested yet.
 - Resizing the window briefly blanks the screen while Android re-lays out.
-- Calls use your Mac's microphone and built-in camera. Only one camera is available, so
-  switching cameras in a video call doesn't work.
 
 ## Development
 
@@ -154,6 +158,14 @@ npm run icons # re-render build/icon.svg to icon.png and icon.icns
 
 
 ## What's next?
-The first version allows you to chat naturally. But there are some improvements I want to do.
-- The app uses whopping 5GB memory. Need to optimize that. (If I would supply the APK from a 3rd party website and use a lighter Android image or some other container, it could be lighter. But that would be a huge security risk.)
-- Haven't tried the video call yet.
+
+The first version lets you chat, call and get notifications naturally. Things I'd like to
+improve:
+
+- **Upright video in calls.** The likely fix is a built-in macOS virtual camera that rotates
+  the picture before Android sees it. That needs an Apple Developer account to sign it.
+- **Signing and notarization**, so macOS opens Emussenger without the "Open Anyway" step.
+- **Less memory.** Usage is down from about 5 GB to 2.5–3.5 GB. Going much lower would need a
+  lighter Android setup, but anything without Google Play would mean installing Messenger
+  from third-party APKs and losing automatic updates, which I don't want for an app this
+  sensitive.
