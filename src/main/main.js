@@ -1,5 +1,5 @@
 const path = require('path');
-const { app, BrowserWindow, ipcMain, clipboard, dialog, shell: macShell } = require('electron');
+const { app, BrowserWindow, ipcMain, clipboard, dialog, systemPreferences, shell: macShell } = require('electron');
 const paths = require('./paths');
 const state = require('./state');
 const sdk = require('./sdk');
@@ -189,6 +189,7 @@ function showAndroidScreen(extra = {}) {
 // user ever lands on Android's home screen, bring Messenger straight back.
 async function enterMessenger() {
   clearInterval(installPoll);
+  requestMicrophone();
   await emulator.allowAnyOrientation().catch(() => {});
   await emulator.launchMessenger().catch(() => {});
   showAndroidScreen();
@@ -197,6 +198,14 @@ async function enterMessenger() {
   watchdog = setInterval(async () => {
     if (await emulator.isHomeScreen()) emulator.launchMessenger().catch(() => {});
   }, 1500);
+}
+
+// The emulator runs as Emussenger's child, so macOS checks Emussenger's
+// microphone permission when Android records (Messenger calls). Ask once,
+// up front, rather than mid-call.
+function requestMicrophone() {
+  if (systemPreferences.getMediaAccessStatus('microphone') !== 'not-determined') return;
+  systemPreferences.askForMediaAccess('microphone').catch(() => {});
 }
 
 function showInstallScreen(error) {

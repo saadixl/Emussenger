@@ -29,14 +29,15 @@ fs.writeFileSync(path.join(electronDir, 'path.txt'), `${NAME}.app/Contents/MacOS
 const plist = path.join(appDir, 'Contents', 'Info.plist');
 const set = (key, value) => {
   try {
-    execFileSync('/usr/libexec/PlistBuddy', ['-c', `Set :${key} ${value}`, plist]);
+    execFileSync('/usr/libexec/PlistBuddy', ['-c', `Set :${key} "${value}"`, plist]);
   } catch {
-    execFileSync('/usr/libexec/PlistBuddy', ['-c', `Add :${key} string ${value}`, plist]);
+    execFileSync('/usr/libexec/PlistBuddy', ['-c', `Add :${key} string "${value}"`, plist]);
   }
 };
 set('CFBundleName', NAME);
 set('CFBundleDisplayName', NAME);
 set('CFBundleIdentifier', 'dev.emussenger.app.dev');
+set('NSMicrophoneUsageDescription', 'Emussenger uses the microphone so the other person can hear you in Messenger calls.');
 
 if (fs.existsSync(icon)) {
   fs.copyFileSync(icon, path.join(appDir, 'Contents', 'Resources', 'electron.icns'));

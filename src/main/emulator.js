@@ -64,6 +64,9 @@ async function start() {
       '-no-window',
       '-no-boot-anim',
       '-no-snapshot', // cold boot, never save a snapshot (see avd.js)
+      // Pass the Mac's microphone through for calls; without this the
+      // emulator feeds Android silence.
+      '-allow-host-audio',
       '-no-metrics',
       '-gpu', process.env.EMUSSENGER_GPU || 'host',
       '-memory', process.env.EMUSSENGER_RAM || '2048',

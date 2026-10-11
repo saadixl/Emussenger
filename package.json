@@ -50,7 +50,10 @@
       "icon": "build/icon.icns",
       "identity": "-",
       "artifactName": "${productName}-${version}-${arch}.${ext}",
-      "hardenedRuntime": false
+      "hardenedRuntime": false,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Emussenger uses the microphone so the other person can hear you in Messenger calls."
+      }
     }
   }
 }
