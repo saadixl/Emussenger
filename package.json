@@ -1,0 +1,49 @@
+{
+  "name": "emussenger",
+  "productName": "Emussenger",
+  "version": "0.1.0",
+  "description": "Messenger for macOS, powered by the Android Messenger app running in a built-in emulator.",
+  "main": "src/main/main.js",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "node scripts/fetch-scrcpy-server.js && node scripts/dev-branding.js",
+    "start": "electron .",
+    "dist": "electron-builder --mac",
+    "icons": "electron scripts/build-icons.js && node scripts/dev-branding.js"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.2.0"
+  },
+  "devDependencies": {
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "dev.emussenger.app",
+    "productName": "Emussenger",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/scrcpy-server",
+        "to": "scrcpy-server"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.social-networking",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.icns"
+    }
+  }
+}

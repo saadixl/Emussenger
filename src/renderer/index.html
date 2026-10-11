@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'">
+  <title>Emussenger</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="toolbar">
+    <span class="title">Emussenger</span>
+    <nav class="nav" id="nav" hidden>
+      <button id="btn-back" title="Back (⌘[)" aria-label="Back">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel" data-screen="checking">
+      <div class="spinner"></div>
+      <p>Checking what needs to be installed…</p>
+    </section>
+
+    <section class="panel" data-screen="license">
+      <h1>Welcome to Emussenger</h1>
+      <p class="lede">
+        Emussenger runs the real Messenger app inside a private Android device on your Mac.
+        To set it up, it needs to download Android from Google
+        (<strong id="license-size"></strong>, one time only).
+      </p>
+      <details class="license">
+        <summary>Google's Android SDK license terms</summary>
+        <pre id="license-text"></pre>
+      </details>
+      <button class="primary" id="btn-accept">Accept and download</button>
+    </section>
+
+    <section class="panel" data-screen="installing">
+      <h1>Setting up Android</h1>
+      <p id="progress-label">Starting download…</p>
+      <div class="bar"><div class="bar-fill" id="progress-fill"></div></div>
+      <p class="muted" id="progress-detail"></p>
+      <p class="muted">You can keep using your Mac. If the download is interrupted it will resume next time.</p>
+    </section>
+
+    <section class="panel" data-screen="booting">
+      <div class="spinner"></div>
+      <h1>Starting Android</h1>
+      <p class="muted" id="boot-hint"></p>
+    </section>
+
+    <section class="panel" data-screen="install-messenger">
+      <h1>Add Messenger</h1>
+      <p class="lede">
+        Drop the Messenger app file here. You can download it from a trusted site such as
+        APKMirror. Look for “Messenger” by Meta Platforms, Inc.
+      </p>
+      <div class="dropzone" id="dropzone">
+        <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        <span>Drop a <strong id="install-exts"></strong> file here</span>
+        <button class="primary" id="btn-choose">Choose file…</button>
+      </div>
+      <p class="error" id="install-error" hidden></p>
+      <p class="muted">
+        Have a Google account? <a href="#" id="link-playstore">Install from Google Play instead</a>.
+      </p>
+    </section>
+
+    <section class="panel" data-screen="installing-messenger">
+      <div class="spinner"></div>
+      <h1>Installing Messenger</h1>
+      <p class="muted">This takes a few seconds.</p>
+    </section>
+
+    <section class="panel" data-screen="error">
+      <h1>Something went wrong</h1>
+      <p id="error-message"></p>
+      <div class="row">
+        <button class="primary" id="btn-retry">Try again</button>
+        <button id="btn-logs">Show logs</button>
+      </div>
+    </section>
+
+    <section class="stage" data-screen="running">
+      <canvas id="screen" tabindex="-1"></canvas>
+      <textarea id="ime" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Keyboard input"></textarea>
+      <div class="banner" id="playstore-banner" hidden>
+        <div>
+          <strong>Install Messenger from Google Play</strong>
+          <span>Sign in and install Messenger. Emussenger switches to it automatically once it's installed.</span>
+        </div>
+        <button id="btn-cancel-playstore">Use a file instead</button>
+      </div>
+      <div class="connecting" id="connecting">
+        <div class="spinner"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="video.js"></script>
+  <script src="input.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
