@@ -1,7 +1,7 @@
 {
   "name": "emussenger",
   "productName": "Emussenger",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Messenger for macOS, powered by the Android Messenger app running in a built-in emulator.",
   "main": "src/main/main.js",
   "private": true,
