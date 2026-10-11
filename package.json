@@ -30,6 +30,10 @@
       {
         "from": "resources/scrcpy-server",
         "to": "scrcpy-server"
+      },
+      {
+        "from": "resources/scrcpy-LICENSE.txt",
+        "to": "scrcpy-LICENSE.txt"
       }
     ],
     "mac": {
@@ -43,7 +47,10 @@
           ]
         }
       ],
-      "icon": "build/icon.icns"
+      "icon": "build/icon.icns",
+      "identity": "-",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "hardenedRuntime": false
     }
   }
 }

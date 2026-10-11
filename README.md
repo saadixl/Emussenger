@@ -34,6 +34,28 @@ Mac and shows it in a normal Mac window. You never see Android itself, only Mess
 - About 3–4 GB of free RAM while it runs.
 - The Messenger Android app file, which you download yourself (see below).
 
+## Download
+
+Get the latest `.dmg` from the [Releases page](https://github.com/saadixl/Emussenger/releases):
+
+- **Apple Silicon** (M1 and newer): `Emussenger-<version>-arm64.dmg`
+- **Intel** (untested): `Emussenger-<version>-x64.dmg`
+
+Open the DMG and drag Emussenger to Applications.
+
+Emussenger isn't notarized by Apple yet (that needs a paid Apple Developer account), so macOS
+blocks it the first time. To open it:
+
+1. Open Emussenger once and dismiss the warning.
+2. Go to **System Settings → Privacy & Security**, scroll down, and click **Open Anyway** next
+   to the Emussenger message.
+
+If macOS says the app "is damaged", run this once in Terminal, then open it again:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Emussenger.app
+```
+
 ## Getting started
 
 1. Open Emussenger. On first launch it asks you to accept Google's Android SDK license, then
