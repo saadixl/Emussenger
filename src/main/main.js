@@ -7,6 +7,7 @@ const emulator = require('./emulator');
 const { ScrcpySession } = require('./scrcpy');
 const { createNotifier } = require('./notifications');
 const { buildMenu } = require('./menu');
+const { createComposer } = require('./composer');
 
 const TOOLBAR_HEIGHT = 38;
 const PACKAGE_EXTENSIONS = ['apk', 'apkm', 'xapk', 'apks'];
@@ -22,6 +23,12 @@ let installPoll = null;
 let watchdog = null;
 let crop = null;
 let videoSize = { width: 1920, height: 1200 };
+
+const composer = createComposer({
+  getStream: () => stream,
+  getCrop: () => crop,
+  getVideoSize: () => videoSize,
+});
 
 const notifier = createNotifier({
   onClick: () => showWindow(),
@@ -157,6 +164,7 @@ async function fitDisplayToWindow() {
     const wasStreaming = Boolean(stream);
     stopStream();
     await emulator.setDisplaySize(width, height);
+    composer.invalidate();
     // The bars can change height when the layout switches (phone vs tablet).
     await new Promise((r) => setTimeout(r, 400));
     const after = await emulator.systemBarInsets();
@@ -285,7 +293,13 @@ async function setup() {
 // also works where it's still synchronous.
 async function paste() {
   const text = await clipboard.readText();
-  if (text) stream?.setClipboard(text, true);
+  if (!text || !stream) return;
+  stream.setClipboard(text, true);
+  composer.onText(text);
+}
+function back() {
+  stream?.back();
+  composer.invalidate();
 }
 const openMessenger = () => emulator.launchMessenger().catch(() => {});
 
@@ -295,6 +309,21 @@ function injectText(text) {
   if (!stream || !text) return;
   if (/^[\x20-\x7e]+$/.test(text)) stream.text(text);
   else stream.setClipboard(text, true);
+  composer.onText(text);
+}
+
+const KEY_ENTER = 66;
+const KEY_TAB = 61;
+const KEY_DELETES = [67, 112]; // backspace, forward delete
+const KEY_NAVIGATION = [19, 20, 21, 22, 92, 93, 122, 123]; // arrows, page, home/end
+const META_SHIFT = 0x1;
+
+// Keeps the Enter-to-send logic informed about edits it can't see.
+function trackKey(keycode, meta) {
+  if (keycode === KEY_ENTER) composer.onText('\n');
+  else if (KEY_DELETES.includes(keycode)) (meta ? composer.onBulkEdit() : composer.onDelete());
+  else if (keycode === KEY_TAB) composer.invalidate();
+  else if (meta & META_SHIFT && KEY_NAVIGATION.includes(keycode)) composer.onBulkEdit(); // selecting text
 }
 
 function registerIpc() {
@@ -308,14 +337,21 @@ function registerIpc() {
   ipcMain.on('messenger:play-store', () => installFromPlayStore());
   ipcMain.on('messenger:cancel-play-store', () => showInstallScreen());
 
-  ipcMain.on('input:touch', (_e, { action, x, y }) => stream?.touch(action, x, y, videoSize.width, videoSize.height));
+  ipcMain.on('input:touch', (_e, { action, x, y }) => {
+    stream?.touch(action, x, y, videoSize.width, videoSize.height);
+    if (action === 1) composer.invalidate();
+  });
   ipcMain.on('input:scroll', (_e, { x, y, h, v }) => stream?.scroll(x, y, videoSize.width, videoSize.height, h, v));
-  ipcMain.on('input:key', (_e, { action, keycode, meta }) => stream?.key(action, keycode, meta));
+  ipcMain.on('input:key', (_e, { action, keycode, meta }) => {
+    stream?.key(action, keycode, meta);
+    if (action === 0) trackKey(keycode, meta);
+  });
+  ipcMain.on('input:enter', () => composer.enter().catch((e) => console.error('enter failed:', e.message)));
   ipcMain.on('input:text', (_e, text) => injectText(text));
   ipcMain.on('video:reset', () => stream?.resetVideo());
   ipcMain.on('input:paste', paste);
 
-  ipcMain.on('nav:back', () => stream?.back());
+  ipcMain.on('nav:back', back);
 }
 
 app.setName('Emussenger');
@@ -324,7 +360,7 @@ app.whenReady().then(() => {
   // Packaged builds get the icon from the bundle; in development set it here.
   if (!app.isPackaged) app.dock?.setIcon(path.join(__dirname, '..', '..', 'build', 'icon.png'));
   registerIpc();
-  buildMenu({ getStream: () => stream, getWindow: () => win, paste, openMessenger });
+  buildMenu({ getStream: () => stream, getWindow: () => win, paste, openMessenger, back, onBulkEdit: () => composer.onBulkEdit() });
   createWindow();
   app.on('activate', showWindow);
 });

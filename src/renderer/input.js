@@ -111,6 +111,12 @@
       e.preventDefault();
       return;
     }
+    // Enter sends the message; Shift+Enter (below) inserts a new line.
+    if (e.key === 'Enter' && !e.shiftKey && !e.altKey && !e.ctrlKey) {
+      e.preventDefault();
+      api.enter();
+      return;
+    }
     const keycode = KEYCODES[e.key];
     if (keycode === undefined) return; // plain text arrives via the input event
     e.preventDefault();

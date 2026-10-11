@@ -5,13 +5,15 @@ const KEY = { A: 29, C: 31, V: 50, X: 52, Z: 54 };
 const META_CTRL = 0x1000 | 0x2000;
 const META_SHIFT = 0x1 | 0x40;
 
-// actions: { getStream(), getWindow(), paste(), openMessenger() }
+// actions: { getStream(), getWindow(), paste(), back(), openMessenger(), onBulkEdit() }
 function buildMenu(actions) {
   const ctrlKey = (keycode, extraMeta = 0) => () => {
     const stream = actions.getStream();
     if (!stream) return;
     stream.key(0, keycode, META_CTRL | extraMeta);
     stream.key(1, keycode, META_CTRL | extraMeta);
+    // Undo/redo/cut/select-all can change or empty the message box.
+    if (keycode !== KEY.C) actions.onBulkEdit();
   };
   // Outside the Android screen (setup pages) fall back to normal editing.
   const edit = (androidFn, webFn) => () => {
@@ -40,7 +42,7 @@ function buildMenu(actions) {
     {
       label: 'Go',
       submenu: [
-        { label: 'Back', accelerator: 'Cmd+[', click: () => actions.getStream()?.back() },
+        { label: 'Back', accelerator: 'Cmd+[', click: () => actions.back() },
         { label: 'Reopen Messenger', accelerator: 'Cmd+1', click: () => actions.openMessenger() },
       ],
     },

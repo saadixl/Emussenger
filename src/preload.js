@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld('emussenger', {
   key: (action, keycode, meta) => ipcRenderer.send('input:key', { action, keycode, meta }),
   text: (text) => ipcRenderer.send('input:text', text),
   paste: () => ipcRenderer.send('input:paste'),
+  enter: () => ipcRenderer.send('input:enter'),
   resetVideo: () => ipcRenderer.send('video:reset'),
 
   back: () => ipcRenderer.send('nav:back'),

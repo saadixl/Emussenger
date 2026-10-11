@@ -87,6 +87,8 @@ async function start() {
   // The AVD's base screen is small (it keeps the emulator's minimum RAM low);
   // the real size follows the window, at 240 dpi so 1 dp = 1.5 px.
   await shell('wm density 240').catch(() => {});
+  // Never show an on-screen keyboard: all typing comes from the Mac keyboard.
+  await shell('settings put secure show_ime_with_hard_keyboard 0').catch(() => {});
 }
 
 // Resizes Android's screen; apps re-lay themselves out for the new size.
@@ -154,6 +156,11 @@ async function disableUnneededApps() {
   if (!todo.length) return;
   await shell(todo.map((p) => `pm disable-user --user 0 ${p} >/dev/null 2>&1`).join('; '), { timeout: 120000 });
   await shell('am kill-all').catch(() => {});
+}
+
+// Reads the on-screen UI (accessibility tree) as XML. Takes ~2 s.
+async function dumpUi() {
+  return shell('uiautomator dump /data/local/tmp/emussenger-ui.xml >/dev/null 2>&1; cat /data/local/tmp/emussenger-ui.xml', { timeout: 15000 });
 }
 
 // Messenger is portrait-only on phones. These platform compat overrides make
@@ -247,5 +254,5 @@ async function installPackageFile(file, tmpDir) {
 module.exports = {
   SERIAL, MESSENGER, events, adb, shell, start, stop,
   isMessengerInstalled, launchMessenger, openPlayStore,
-  isHomeScreen, systemBarInsets, installPackageFile, setDisplaySize, allowAnyOrientation, disableUnneededApps,
+  isHomeScreen, systemBarInsets, installPackageFile, setDisplaySize, allowAnyOrientation, disableUnneededApps, dumpUi,
 };
