@@ -8,6 +8,9 @@
   Messenger on your Mac, for people who deactivated Facebook but still use Messenger.
 </p>
 
+<img width="1512" height="982" alt="sshot" src="https://github.com/user-attachments/assets/37865def-413b-493c-96ae-2bccf53f4346" />
+
+
 ---
 
 > **Disclaimer:** Emussenger is an independent, unofficial project. It is not affiliated with,
