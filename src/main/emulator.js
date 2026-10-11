@@ -63,6 +63,7 @@ async function start() {
       '-port', String(CONSOLE_PORT),
       '-no-window',
       '-no-boot-anim',
+      '-no-snapshot', // cold boot, never save a snapshot (see avd.js)
       '-no-metrics',
       '-gpu', process.env.EMUSSENGER_GPU || 'host',
       '-memory', process.env.EMUSSENGER_RAM || '2048',
@@ -84,9 +85,9 @@ async function start() {
   // Let apps fill the display whatever its shape, instead of rotating or
   // letterboxing portrait-only screens when the window is wide.
   await shell('wm set-ignore-orientation-request true').catch(() => {});
-  // The AVD's base screen is small (it keeps the emulator's minimum RAM low);
-  // the real size follows the window, at 240 dpi so 1 dp = 1.5 px.
-  await shell('wm density 240').catch(() => {});
+  // 160 dpi: 1 dp = 1 px, so Android renders one pixel per window point.
+  // (Earlier versions used 240 dpi; set it explicitly so they're reset.)
+  await shell('wm density 160').catch(() => {});
   // Never show an on-screen keyboard: all typing comes from the Mac keyboard.
   await shell('settings put secure show_ime_with_hard_keyboard 0').catch(() => {});
 }
@@ -96,7 +97,7 @@ async function setDisplaySize(width, height) {
   await shell(`wm size ${width}x${height}`);
 }
 
-// Shuts down via the console so the emulator saves a quick-boot snapshot.
+// Shuts Android down cleanly via the emulator console.
 async function stop() {
   if (!(await isOnline())) return;
   await adb(['-s', SERIAL, 'emu', 'kill'], { timeout: 10000 }).catch(() => {});

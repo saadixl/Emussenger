@@ -21,8 +21,8 @@
       $('license-text').textContent = data.licenses.join('\n\n────────\n\n');
     } else if (name === 'booting') {
       $('boot-hint').textContent = data.firstBoot
-        ? 'The first start takes a minute or two. Later starts are much faster.'
-        : '';
+        ? 'The first start takes a minute or two.'
+        : 'This takes about half a minute.';
     } else if (name === 'install-messenger') {
       $('install-exts').textContent = data.extensions.map((e) => `.${e}`).join(' / ');
       $('install-error').hidden = !data.error;

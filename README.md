@@ -77,7 +77,10 @@ macOS notifications with a Dock badge. Quit with ⌘Q.
 - **Notifications:** Messenger's Android notifications are read via `dumpsys notification` and
   shown as macOS notifications, with an unread count on the Dock icon.
 - **Background:** with the window closed, the stream stops but Android keeps running. ⌘Q shuts
-  Android down and saves a quick-boot snapshot, so the next start takes about a second.
+  Android down.
+- **Memory:** Android always cold-boots (about half a minute) instead of restoring a snapshot,
+  which would load all of its RAM up front, and it renders one pixel per window point (capped
+  at 1920×1200) rather than at full Retina resolution.
 
 ## Privacy and security
 

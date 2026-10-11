@@ -6,8 +6,8 @@ const { API_LEVEL, ABI } = require('./sdk');
 
 const AVD_NAME = 'Emussenger';
 
-// A landscape tablet so Messenger uses its two-pane layout. 1920x1200 at
-// 240 dpi is 1280x800 dp: crisp on Retina without a huge video stream.
+// A landscape tablet so Messenger uses its two-pane layout. This is only the
+// starting size: at runtime the screen is resized to follow the window.
 const CONFIG = {
   AvdId: AVD_NAME,
   'avd.ini.displayname': AVD_NAME,
@@ -36,8 +36,10 @@ const CONFIG = {
   'hw.gps': 'no',
   'hw.sensors.orientation': 'no',
   'hw.sensors.proximity': 'no',
-  'fastboot.forceColdBoot': 'no',
-  'fastboot.forceFastBoot': 'yes',
+  // Always cold boot: restoring a snapshot loads all of Android's RAM up
+  // front, while a cold boot only uses what Android actually needs.
+  'fastboot.forceColdBoot': 'yes',
+  'fastboot.forceFastBoot': 'no',
   'showDeviceFrame': 'no',
   'image.sysdir.1': `system-images/android-${API_LEVEL}/google_apis_playstore/${ABI}/`,
   'tag.id': 'google_apis_playstore',
@@ -57,6 +59,8 @@ function ensureAvd() {
   );
   // Rewritten every launch so config changes in new app versions apply.
   fs.writeFileSync(path.join(avdDir, 'config.ini'), toIni(CONFIG));
+  // Snapshots from versions that used quick boot are several GB on disk.
+  fs.rmSync(path.join(avdDir, 'snapshots'), { recursive: true, force: true });
   return AVD_NAME;
 }
 

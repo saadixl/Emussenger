@@ -134,12 +134,14 @@ function stopStream() {
   s?.stop();
 }
 
-// Android pixels per window point. The AVD is 240 dpi (1.5 px per dp), so
-// one window point is one Android dp: Messenger looks like a desktop app.
-const PX_PER_POINT = 1.5;
-// Caps the stream so the in-guest H.264 encoder stays fast on big windows;
-// beyond this Android gets fewer dp and content simply scales up.
-const MAX_PIXELS = 2560 * 1600;
+// Android pixels per window point. Android runs at 160 dpi (1 px per dp), so
+// one window point is one Android dp and Messenger is sized like a desktop
+// app. Rendering 1 px per point (not Retina's 2) keeps graphics memory low
+// at the cost of slightly softer text.
+const PX_PER_POINT = 1;
+// Caps the render size to limit graphics memory and encoder load on big
+// windows; beyond this Android gets fewer dp and content simply scales up.
+const MAX_PIXELS = 1920 * 1200;
 const MIN_SIDE = 480;
 let fitting = null;
 
@@ -156,19 +158,24 @@ async function fitDisplayToWindow() {
     let scale = PX_PER_POINT;
     if (w * contentH * scale * scale > MAX_PIXELS) scale = Math.sqrt(MAX_PIXELS / (w * contentH));
 
-    const bars = await emulator.systemBarInsets();
     const width = even(w * scale);
-    const height = even(contentH * scale) + bars.top + bars.bottom;
-    if (width === bars.width && height === bars.height && crop) return;
+    const contentPx = even(contentH * scale);
+    let bars = await emulator.systemBarInsets();
+    const fits = (b) => b.width === width && b.height - b.top - b.bottom === contentPx;
+    if (crop && fits(bars) && crop.height === contentPx) return;
 
     const wasStreaming = Boolean(stream);
     stopStream();
-    await emulator.setDisplaySize(width, height);
+    // The bars' heights depend on density and layout (phone vs tablet), so
+    // re-measure after resizing and correct once if they changed.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await emulator.setDisplaySize(width, contentPx + bars.top + bars.bottom);
+      await new Promise((r) => setTimeout(r, 400));
+      bars = await emulator.systemBarInsets();
+      if (fits(bars)) break;
+    }
     composer.invalidate();
-    // The bars can change height when the layout switches (phone vs tablet).
-    await new Promise((r) => setTimeout(r, 400));
-    const after = await emulator.systemBarInsets();
-    crop = { width: after.width, height: after.height - after.top - after.bottom, x: 0, y: after.top };
+    crop = { width: bars.width, height: bars.height - bars.top - bars.bottom, x: 0, y: bars.top };
     if (wasStreaming || showAndroid) startStream();
   })().finally(() => { fitting = null; });
   return fitting;
